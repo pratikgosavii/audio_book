@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="container">
+    {% if search_result %}
+    <h3 class="my-4">Searched Books </h3>
+
+    {% else %}
+    <h3 class="my-4">All Books</h3>
+    {% endif %}
+    <div class="row">
+        {% for book in books %}
+        <div class="col-sm-12 col-md-6 col-lg-3">
+            {% with book as book %}
+            {% include 'includes/card.html' %}
+            {% endwith %}
+        </div>
+        {% empty %}
+        <h1>No data</div>
+        {% endfor %}
+    </div>
+</div>
+{% include 'includes/footer.html' %}
+{% endblock %}

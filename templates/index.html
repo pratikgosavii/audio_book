@@ -7,10 +7,10 @@
 
 <section class="hero px-3 d-flex justify-content-center align-items-center flex-column">
     <h3 class="text-white">Listen to your favorite songs</h3>
-    <div class="form-group d-flex gap-2 bg-light p-2 rounded" style="width: 100%; max-width: 600px;">
-        <input class="form-control px-3 text-muted" type="text" placeholder="...">
-        <button class="btn btn-success search-btn"><b>Search</b></button>
-    </div>
+    <form action="{% url 'search' %}" class="form-group d-flex gap-2 bg-light p-2 rounded" style="width: 100%; max-width: 600px;">
+        <input class="form-control px-3 text-muted" name="q" type="text" placeholder="...">
+        <button type="submit" class="btn btn-success search-btn">Search</button>
+    </form>
 </section>
 <div class="container">
 

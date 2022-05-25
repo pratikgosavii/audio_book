@@ -9,7 +9,9 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('add-to-favorite/', views.addToFevorite, name='add_to_favorite'),
     path('get-book/', views.getBook, name='get_book'),
-    # path('explore/', views.demo, name="explore")
+    path('explore/', views.explore, name="explore"),
+    path('search/', views.search, name="search")
+    
 ]
 
 urlpatterns += static(settings.MEDIA_URL,

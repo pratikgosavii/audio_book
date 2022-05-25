@@ -56,6 +56,12 @@ def getBook(req):
     return JsonResponse({"data": "book not found!"}, status=200)
 
 
-# def demo(req):
-#     books = Book.objects.all()
-#     return render(req, 'explorer.html', {"books": books})
+def explore(req):
+    books = Book.objects.all()
+    return render(req, 'explorer.html', {"books": books})
+
+def search(req):
+    q = req.GET.get('q')
+    
+    books = Book.objects.filter(book_name__contains=q)
+    return render(req, 'explorer.html', {"books": books, "search_result": True})
