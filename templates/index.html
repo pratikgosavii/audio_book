@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}HOME PAGE{% endblock %}
+
+{% block body %}
+
+{% include 'includes/navbar.html' %}
+
+<section class="hero px-3 d-flex justify-content-center align-items-center flex-column">
+    <h3 class="text-white">Listen to your favorite songs</h3>
+    <div class="form-group d-flex gap-2 bg-light p-2 rounded" style="width: 100%; max-width: 600px;">
+        <input class="form-control px-3 text-muted" type="text" placeholder="...">
+        <button class="btn btn-success search-btn"><b>Search</b></button>
+    </div>
+</section>
+<div class="container">
+
+    <div class="badges mt-5 text-center">
+        <button class="btn btn-outline-primary rounded-pill px-4 px-2 mx-2">Genre</button>
+        <button class="btn btn-outline-primary rounded-pill px-4 px-2 mx-2">Top Selling</button>
+        <button class="btn btn-outline-primary rounded-pill px-4 px-2 mx-2">New Releses</button>
+    </div>
+    <section class="splide mb-5" aria-label="Splide Basic HTML Example">
+        <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-center">
+            <h3 class="mt-5 mb-4">Latests Books</h3>
+            <a href="#" class="mt-4 btn btn-sm btn-primary">view all</a>
+        </div>
+        <div class="splide__track">
+            <ul class="splide__list">
+                {% for book in books %}
+                <li class="splide__slide">
+                    {% with book as books %}
+                    {% include 'includes/card.html' %}
+                    {% endwith %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+
+    {% for category in categories %}
+    <section class="splide my-5" aria-label="Splide Basic HTML Example2">
+        <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-center">
+            <h3 class="mt-5 mb-4">{{ category.category }} category</h3>
+            <a href="#" class="mt-4 btn btn-sm btn-primary">view all</a>
+        </div>
+        <div class="splide__track">
+            <ul class="splide__list">
+                {% for book in category.books.all %}
+                <li class="splide__slide">
+                    {% with book as books %}
+                    {% include 'includes/card.html' %}
+                    {% endwith %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    {% endfor %}
+</div>
+
+{% include 'includes/footer.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+    const splideConfig = {
+        type: 'single',
+        perPage: 5,
+        perMove: 1,
+        pagination: false,
+        breakpoints: {
+            1440: {
+                perPage: 3.5,
+            },
+            1024: {
+                perPage: 3,
+            },
+            768: {
+                perPage: 2.5,
+            },
+            425: {
+                perPage: 1.5,
+            },
+            375: {
+                perPage: 1,
+            },
+        }
+    }
+
+    var elms = document.getElementsByClassName('splide');
+
+    for (var i = 0; i < elms.length; i++) {
+        new Splide(elms[i], splideConfig).mount();
+    }
+
+</script>
+{% endblock %}

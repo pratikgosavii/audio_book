@@ -1,0 +1,159 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Roboto:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.0.2/dist/css/splide.min.css">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  {% block styles %} {% endblock %}
+  <title>{% block title %}{% endblock %}</title>
+
+</head>
+
+<body>
+  {% block body %}
+  {% endblock %}
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+
+  <!-- Option 2: Separate Popper and Bootstrap JS -->
+  <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    -->
+  <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.0.2/dist/js/splide.min.js"></script>
+
+  <script>
+    // var navbar = document.querySelector('nav')
+
+    // window.onscroll = function () {
+
+    //   // pageYOffset or scrollY
+    //   if (window.pageYOffset > 0) {
+    //     navbar.classList.add('bg-light')
+    //     navbar.classList.add('navbar-light')
+    //     navbar.classList.remove('navbar-dark')
+
+    //   } else {
+    //     navbar.classList.add('navbar-dark')
+    //     navbar.classList.remove('bg-light')
+    //     navbar.classList.remove('navbar-light')
+    //   }
+    // }
+
+    function addToFevorite(e, id) {
+      fetch("{% url 'add_to_favorite' %}", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ id: id })
+      }).then(res => res.json())
+        .then(data => {
+
+          if (data.data) {
+            e.querySelector('i').classList.remove('fa-regular')
+            e.querySelector('i').classList.remove('text-light')
+            e.querySelector('i').classList.add('fa-solid')
+            e.querySelector('i').classList.add('text-danger')
+          } else {
+            e.querySelector('i').classList.remove('fa-solid')
+            e.querySelector('i').classList.remove('text-danger')
+            e.querySelector('i').classList.add('fa-regular')
+            e.querySelector('i').classList.add('text-light')
+          }
+        }).catch(err =>
+          console.log(err)
+        )
+    }
+
+    const btnToggler = document.querySelector('.btn-toggler');
+    const footer = document.querySelector('footer');
+
+    btnToggler.addEventListener('click', (e) => {
+      if (footer.classList.contains('full')) {
+        footer.classList.remove('full');
+        btnToggler.querySelector('i').classList.remove('fa-circle-chevron-down')
+        btnToggler.querySelector('i').classList.add('fa-circle-chevron-up')
+      } else {
+        footer.classList.add('full');
+        btnToggler.querySelector('i').classList.add('fa-circle-chevron-down')
+        btnToggler.querySelector('i').classList.remove('fa-circle-chevron-up')
+      }
+
+      fetch("{% url 'get_book' %}", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ id: btnToggler.dataset.id })
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data)
+          document.querySelector('.book-data').innerHTML = `
+            <div class="card shadow mb-3 flex-column flex-md-row gap-2 overflow-hidden" style="width: 100%">
+              <img class="card-top-img" src="${data.data.book_cover_url}">
+              <div class="card-body d-flex flex-column gap-3">
+                <div>
+                      <h4 class="card-title m-0 text-dark">
+                          ${data.data.book_name}
+                      </h4>
+                      <small class="text-muted artists"><b>${data.data.book_author}</b></small>
+                </div>
+                  <div class="ratings mt-1 text-warning">
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star-half"></i>
+                  </div>
+                  <div class="text-muted">
+                    ${data.data.description}
+                    </div>
+              </div>
+
+              {% if request.user.is_authenticated %}
+              <span class="heart" role="button" onclick="addToFevorite('{{ book.id }}')">
+                <i class=" text-dark fa-lg fa-regular fa-heart"></i>
+              </span>
+              {% else %}
+              <a class="heart" href="{% url 'login' %}">
+                <i class=" text-dark fa-lg fa-regular fa-heart"></i>
+              </a>
+              {% endif %}
+          </div>
+          `
+        })
+        .catch((err) => console.log(err));
+    })
+  </script>
+
+  <script src="{% static 'js/player.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+
+</html>

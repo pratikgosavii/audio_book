@@ -1,0 +1,38 @@
+<div class="card shadow mb-3 overflow-hidden">
+    <img class="card-top-img" src="{{ book.book_cover_file.url }}">
+    <div class="card-body d-flex gap-3 align-items-center">
+        <div class="text-danger" onclick="playMusic('{{ book.book_audio_file.url }}', '{{ book.id }}')">
+            <i class="fa-2x fa-solid fa-circle-play" data-id="{{ book.id }}"></i>
+        </div>
+        <div class="flex-grow-1">
+            <marquee class="card-title m-0" direction="left" loop="" Scrollamount=5>
+                {{ book.book_name }}
+            </marquee>
+            <small class="text-muted artists"><b>{{ book.artist }}</b></small>
+
+            <div class="ratings mt-1 text-warning">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star-half"></i>
+            </div>
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    {% if book.fav_book.all.0 %}
+    <span class="heart" role="button" onclick="addToFevorite(this, '{{ book.id }}')">
+        <i class="text-danger shadow fa-lg fa-solid fa-heart"></i>
+    </span>
+    {% else %}
+    <span class="heart" role="button" onclick="addToFevorite(this, '{{ book.id }}')">
+        <i class="text-light fa-lg fa-regular fa-heart"></i>
+    </span>
+    {% endif %}
+    {% else %}
+    <a class="heart" href="{% url 'login' %}">
+        <i class=" text-white shadow fa-lg fa-solid fa-heart"></i>
+    </a>
+    {% endif %}
+</div>
